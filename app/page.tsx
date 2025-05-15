@@ -1,9 +1,10 @@
+import Navbar from "./components/ui/ResposiveNav";
 
 
 export default function Home() {
   return (
     <div>
-      hi there
+      <Navbar />
     </div>
   );
 }
