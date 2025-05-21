@@ -1,4 +1,3 @@
-
 // 1st step : split the words in individual letters , but preserve accessibililty
 // step 2 : now import motion from framer motion and change the span to motion.span
 // step 3 : now using named animation and controlling the state from parent we can add transition named staggeredChildren
@@ -6,30 +5,25 @@
 // Problems faced :
 // 1. not getting the space between the letters
 // fix :
-    // {text.split(" ").map((word, i) => (
-    //             <span key={i} className="inline-block mr-2">
-    //               {Array.from(word).map((char, j) => (
-    //                 <motion.span
-    //                   key={`${i}-${j}`}
-    //                   className="inline-block"
-    //                   variants={defaultAnimation}
-    //                 >
-    //                   {char}
-    //                 </motion.span>
-    //               ))}
-    //               {/* Add actual space between words */}
-    //               <span className="inline-block">&nbsp;</span>
-    //             </span>
-    //           ))}
-
-
-
-
-
+// {text.split(" ").map((word, i) => (
+//             <span key={i} className="inline-block mr-2">
+//               {Array.from(word).map((char, j) => (
+//                 <motion.span
+//                   key={`${i}-${j}`}
+//                   className="inline-block"
+//                   variants={defaultAnimation}
+//                 >
+//                   {char}
+//                 </motion.span>
+//               ))}
+//               {/* Add actual space between words */}
+//               <span className="inline-block">&nbsp;</span>
+//             </span>
+//           ))}
 
 "use client";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, stagger, useAnimate, useInView } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 type StaggeredTextProps = {
   text: string;
@@ -41,7 +35,7 @@ type StaggeredTextProps = {
 const defaultAnimation = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
-  transition : { duration: 0.1 },
+  transition: { duration: 0.1 },
 };
 
 export default function StaggeredText({
@@ -50,8 +44,18 @@ export default function StaggeredText({
   className,
   once,
 }: StaggeredTextProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.5, once });
+  // const ref = useRef(null);
+  const [scope, animate] = useAnimate();
+  // const isInView = useInView(ref, { amount: 0.5, once });
+  const isInView = useInView(scope, { amount: 0.5, once });
+
+  useEffect(() => {
+    if (isInView) {
+      animate("span", { opacity: 1 }, { delay: stagger(0.1) });
+    } else {
+      animate("span", { opacity: 0 }, { duration: 0 });
+    }
+  }, [isInView, animate]);
 
   return (
     <section className="container h-screen w-screen mx-auto">
@@ -60,10 +64,11 @@ export default function StaggeredText({
           <Wrapper className={className}>
             <span className="sr-only">{text}</span>
             <motion.span
-              ref={ref}
+              // ref={ref}
+              ref={scope}
               initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              transition={{ staggerChildren: 0.1 }}
+              // animate={isInView ? "visible" : "hidden"}
+              // transition={{ staggerChildren: 0.1 }}
               aria-hidden
             >
               {text.split(" ").map((word, i) => (
@@ -81,7 +86,6 @@ export default function StaggeredText({
                   <span className="inline-block">&nbsp;</span>
                 </span>
               ))}
-
             </motion.span>
           </Wrapper>
         </h1>
@@ -89,5 +93,3 @@ export default function StaggeredText({
     </section>
   );
 }
-
-
