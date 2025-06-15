@@ -20,6 +20,7 @@ import dynamic from "next/dynamic";
 import Navbar from "./components/ui/ResposiveNav";
 import StaggeredText from "./components/ui/StaggeredText";
 import { SlideTabsExample } from "./components/ui/Nabar2";
+import { RevealLinks } from "./components/ui/HoverAnimation";
 
 
 // const StaggeredText = dynamic(() => import("@/components/ui/StaggeredText"), {
@@ -41,6 +42,7 @@ export default function Home() {
         once={true}
       />
       <StaggeredText className="text-[50px]" text="Hello Aditi Again !!!" once={true} />
+      <RevealLinks/>
     </div>
   );
 }
